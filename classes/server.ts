@@ -2,8 +2,10 @@ import express from 'express';
 import { SERVER_PORT } from '../global/environment';
 import socketIO from 'socket.io';
 import http from 'http';
+import * as socket from  '../sockets/socket';
 
 export default class Server {
+    // Singleton
     private static _instance: Server;
 
     public app: express.Application;
@@ -22,6 +24,7 @@ export default class Server {
         this.listenSockets();
     }
 
+    // Singleton
     public static get instance() {
         return this._instance || (this._instance = new this());
     }
@@ -31,6 +34,12 @@ export default class Server {
 
         this.io.on('connection', cliente => {
             console.log('Cliente conectado');
+
+            // Metodo mensaje
+            socket.mensaje(cliente);
+
+            // Desconectar
+            socket.desconectar(cliente);
         });
     }
 
